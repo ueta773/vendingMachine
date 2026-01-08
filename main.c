@@ -1,132 +1,176 @@
 #include <stdio.h>
 
+/* ãƒ¡ãƒ‹ãƒ¥ãƒ¼ç•ªå·(å°†æ¥çš„ã«ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«ã¸ç§»è¡Œ) */
+typedef enum{
+    MENU_NONE = 0,
+    MENU_BUY = 1,
+    MENU_MAINTENANCE = 2,
+    MENU_EXIT = 99
+} Menu;
+
+/* (å°†æ¥çš„ã«ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«ã¸ç§»è¡Œ) */
+extern const int COIN_10;
+extern const int COIN_50;
+extern const int COIN_100;
+extern const int COIN_500;
+
+/* å•†å“ä¾¡æ ¼(å°†æ¥çš„ã«ãƒ˜ãƒƒãƒ€ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«ã¸ç§»è¡Œ) */
+extern const int DRINK01_PRICE;
+extern const int DRINK02_PRICE;
+extern const int DRINK03_PRICE;
+
+/* extern constã®å®šç¾©(å®Ÿä½“) */
+const int COIN_10 = 10;
+const int COIN_50 = 50;
+const int COIN_100 = 100;
+const int COIN_500 = 500;
+
+const int DRINK01_PRICE = 100;
+const int DRINK02_PRICE = 120;
+const int DRINK03_PRICE = 140;
+
+static const int MIN_SYOUHIN_NUMBER = 1;
+
+/* å•†å“ãƒ‡ãƒ¼ã‚¿ */
+static const char * const syouhinName[] = {"ãŠèŒ¶","ã‚³ãƒ¼ãƒ’ãƒ¼","ã‚¸ãƒ¥ãƒ¼ã‚¹"};
+static const int prices[] = {DRINK01_PRICE,DRINK02_PRICE,DRINK03_PRICE};
+static const int itemCount = (int)(sizeof(prices) / sizeof(prices[0]));
+
 void inputCoins(int *jyuu,int *gojyuu, int *hyaku,int *gohyaku);
 
 int main()
 {
-    int menuNumber = 0;
+    Menu menuNumber = MENU_NONE;
     int jyuuYen = 0;
     int gojyuuYen = 0;
     int hyakuYen = 0;
     int gohyakuYen = 0;
     int tounyuuKingaku = 0;
     int syouhinNumber = 0;
-    const char *syouhinName[] = {"‚¨’ƒ","ƒR[ƒq[","ƒWƒ…[ƒX"};
-    int prices[] = {100,120,140};
-    int itemCount = 3;
     int otsuri = 0;
 
 
-    while (menuNumber != 1 && menuNumber != 2 && menuNumber != 99)
+    while (1)
     {
-        printf("\n©“®”Ì”„‹@ƒvƒƒOƒ‰ƒ€\n");
-        // printf("yƒƒjƒ…[‘I‘ğzÀs‚·‚éƒƒjƒ…[”Ô†‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B\n");
-        printf("yƒƒjƒ…[‘I‘ğz1F¤•iw“üA2Fƒƒ“ƒeƒiƒ“ƒXA99FI—¹\n");
+        printf("\nè‡ªå‹•è²©å£²æ©Ÿãƒ—ãƒ­ã‚°ãƒ©ãƒ \n");
+        printf("ã€ãƒ¡ãƒ‹ãƒ¥ãƒ¼é¸æŠã€‘%dï¼šå•†å“è³¼å…¥ã€%dï¼šãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã€%dï¼šçµ‚äº†\n",MENU_BUY,MENU_MAINTENANCE,MENU_EXIT);
 
-        if (scanf("%d",&menuNumber) != 1)
+        int inputMenu = 0;
+        if (scanf("%d",&inputMenu) != 1)
         {
-            printf("Às‚·‚éƒƒjƒ…[”Ô†‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B\n");
+            printf("å®Ÿè¡Œã™ã‚‹ãƒ¡ãƒ‹ãƒ¥ãƒ¼ç•ªå·ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚\n");
             while (getchar() != '\n');
             continue;
         }
+
+        if (inputMenu ==  MENU_BUY || inputMenu == MENU_MAINTENANCE || inputMenu == MENU_EXIT){
+            menuNumber = (Menu)inputMenu;
+        } else{
+            printf("\næ­£ã—ã„ç•ªå·ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚\n");
+            menuNumber = MENU_NONE;
+            continue;
+        }
+
         switch (menuNumber)
         {
-            case 1:
+            case MENU_BUY:
             {
                 int syouhinPrice = 0;
 
-                // ¤•iˆê——
-                printf("\nyæˆµ¤•iz\n");
+                // å•†å“ä¸€è¦§
+                printf("\nã€å–æ‰±å•†å“ã€‘\n");
                 for (int i = 0; i < itemCount;i ++)
                 {
-                    printf("%dF%s(%d‰~)\n",i + 1,syouhinName[i],prices[i]);
+                    printf("%dï¼š%s(%då††)\n",i + MIN_SYOUHIN_NUMBER,syouhinName[i],prices[i]);
                 }
 
-                // d‰İ“Š“üˆ—
+                // ç¡¬è²¨æŠ•å…¥å‡¦ç†
                 inputCoins(&jyuuYen,&gojyuuYen,&hyakuYen,&gohyakuYen);
 
-                // “Š“ü‹àŠz‚Ì‡Œv
-                tounyuuKingaku = (jyuuYen*10) + (gojyuuYen*50) + (hyakuYen*100) + (gohyakuYen*500);
+                // æŠ•å…¥é‡‘é¡ã®åˆè¨ˆ
+                tounyuuKingaku = (jyuuYen*COIN_10) + (gojyuuYen*COIN_50) + (hyakuYen*COIN_100) + (gohyakuYen*COIN_500);
 
-                // ‡ŒvŠz‚ª0‚Ìê‡Aƒƒjƒ…[‚Ö–ß‚é
+                // åˆè¨ˆé¡ãŒ0ã®å ´åˆã€ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã¸æˆ»ã‚‹
                 if (tounyuuKingaku == 0)
                 {
-                    printf("\n“Š“ü‹àŠz‚ª0‚Ì‚½‚ßƒƒjƒ…[‚É–ß‚è‚Ü‚·B\n");
-                    menuNumber = 0;
+                    printf("\næŠ•å…¥é‡‘é¡ãŒ0ã®ãŸã‚ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã«æˆ»ã‚Šã¾ã™ã€‚\n");
+                    menuNumber = MENU_NONE;
                     break;
                 }
 
                 while (1)
                 {
-                    printf("\nw“ü‚·‚é¤•i‚Ì”Ô†‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B\n");
+                    printf("\nè³¼å…¥ã™ã‚‹å•†å“ã®ç•ªå·ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚\n");
                     scanf("%d",&syouhinNumber);
 
-                    // ³‚µ‚¢“ü—Í‚ğó‚¯‚é‚Æƒ‹[ƒv‚ğ”²‚¯‚éB
-                    if (syouhinNumber >= 1 && syouhinNumber <= itemCount)
+                    // æ­£ã—ã„å…¥åŠ›ã‚’å—ã‘ã‚‹ã¨ãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹ã€‚
+                    if (syouhinNumber >= MIN_SYOUHIN_NUMBER && syouhinNumber <= itemCount)
                     {
                         break;
                     }
 
-                    printf("Error::‘¶İ‚µ‚È‚¢¤•i”Ô†‚Å‚·B‚à‚¤ˆê“x“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B\n");
+                    printf("Error::å­˜åœ¨ã—ãªã„å•†å“ç•ªå·ã§ã™ã€‚ã‚‚ã†ä¸€åº¦å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚\n");
                 }
 
                 syouhinPrice = prices[syouhinNumber - 1];
 
-                // “Š“ü‹àŠz‚Æ¤•i‰¿Ši‚Ì”äŠr
+                // æŠ•å…¥é‡‘é¡ã¨å•†å“ä¾¡æ ¼ã®æ¯”è¼ƒ
                 if (tounyuuKingaku < syouhinPrice)
                 {
                     int fusokuKingaku = 0;
                     fusokuKingaku = syouhinPrice - tounyuuKingaku;
 
-                    // “Š“ü‹àŠz‚ª•s‘«‚µ‚Ä‚¢‚½ê‡‚Ìˆ—
+                    // æŠ•å…¥é‡‘é¡ãŒä¸è¶³ã—ã¦ã„ãŸå ´åˆã®å‡¦ç†
                     while (fusokuKingaku > 0)
                     {
-                        printf("\n“Š“ü‹àŠz‚ª%d‰~•s‘«‚µ‚Ä‚¢‚Ü‚·B\n¤•i‰¿ŠiF%d‰~A“Š“ü‹àŠzF%d‰~\n",fusokuKingaku,syouhinPrice,tounyuuKingaku);
+                        printf("\næŠ•å…¥é‡‘é¡ãŒ%då††ä¸è¶³ã—ã¦ã„ã¾ã™ã€‚\nå•†å“ä¾¡æ ¼ï¼š%då††ã€æŠ•å…¥é‡‘é¡ï¼š%då††\n",fusokuKingaku,syouhinPrice,tounyuuKingaku);
 
-                        // ’Ç‰Á‚Åd‰İ“Š“ü
-                        printf("’Ç‰Á‚Åd‰İ‚ğ“Š“ü‚µ‚Ä‚­‚¾‚³‚¢B\n");
+                        // è¿½åŠ ã§ç¡¬è²¨æŠ•å…¥
+                        printf("è¿½åŠ ã§ç¡¬è²¨ã‚’æŠ•å…¥ã—ã¦ãã ã•ã„ã€‚\n");
 
-                        // d‰İ“Š“üˆ—
+                        // ç¡¬è²¨æŠ•å…¥å‡¦ç†
                         inputCoins(&jyuuYen,&gojyuuYen,&hyakuYen,&gohyakuYen);
 
-                        tounyuuKingaku += (jyuuYen*10) +  (gojyuuYen*50) + (hyakuYen*100) + (gohyakuYen*500);
+                        tounyuuKingaku += (jyuuYen*COIN_10) +  (gojyuuYen*COIN_50) + (hyakuYen*COIN_100) + (gohyakuYen*COIN_500);
                         fusokuKingaku = syouhinPrice - tounyuuKingaku;
                     }
                 }
 
-                printf("\nyw“üŠ®—¹Iz\n");
+                printf("\nã€è³¼å…¥å®Œäº†ï¼ã€‘\n");
 
-                // ‚¨’Ş‚è‚ÌŒvZ
+                // ãŠé‡£ã‚Šã®è¨ˆç®—
                 otsuri = tounyuuKingaku - syouhinPrice;
-                printf("‚¨‚Â‚è%d‰~\n",otsuri);
+                printf("ãŠã¤ã‚Š%då††\n",otsuri);
 
-                menuNumber = 0;
+                menuNumber = MENU_NONE;
                 break;
             }
-            case 2:
-                printf("%d:ƒƒ“ƒeƒiƒ“ƒX\n",menuNumber);
+            case MENU_MAINTENANCE:
+                printf("%d:ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹\n",menuNumber);
+                return 0;
                 break;
 
-            case 99:
-                printf("%d:I—¹\n",menuNumber);
+            case MENU_EXIT:
+                printf("%d:çµ‚äº†\n",menuNumber);
+                return 0;
                 break;
 
             default:
-                printf("³‚µ‚¢”Ô†‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B\n");
+                printf("æ­£ã—ã„ç•ªå·ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚\n");
                 break;
         }
     }
     return 0;
 }
 
-// d‰İ“Š“üˆ—
+// ç¡¬è²¨æŠ•å…¥å‡¦ç†
 void inputCoins(int *jyuu,int *gojyuu, int *hyaku,int *gohyaku){
-    printf("\n10‰~d‰İ‚Ì“Š“ü‚·‚é–‡”‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B\n");
+    printf("\n10å††ç¡¬è²¨ã®æŠ•å…¥ã™ã‚‹æšæ•°ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚\n");
     scanf("%d",jyuu);
-    printf("50‰~d‰İ‚Ì“Š“ü‚·‚é–‡”‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B\n");
+    printf("50å††ç¡¬è²¨ã®æŠ•å…¥ã™ã‚‹æšæ•°ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚\n");
     scanf("%d",gojyuu);
-    printf("100‰~d‰İ‚Ì“Š“ü‚·‚é–‡”‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B\n");
+    printf("100å††ç¡¬è²¨ã®æŠ•å…¥ã™ã‚‹æšæ•°ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚\n");
     scanf("%d",hyaku);
-    printf("500‰~d‰İ‚Ì“Š“ü‚·‚é–‡”‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢B\n");
+    printf("500å††ç¡¬è²¨ã®æŠ•å…¥ã™ã‚‹æšæ•°ã‚’å…¥åŠ›ã—ã¦ãã ã•ã„ã€‚\n");
     scanf("%d",gohyaku);
 }
