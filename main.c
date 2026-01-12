@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <limits.h>
 
 /* メニュー番号(将来的にヘッダーファイルへ移行) */
 typedef enum{
@@ -38,6 +41,51 @@ static const int itemCount = (int)(sizeof(prices) / sizeof(prices[0]));
 
 void inputCoins(int *jyuu,int *gojyuu, int *hyaku,int *gohyaku);
 
+// 1行分の入力を読み取り、intへ変換。成功：1、失敗：0を返す。
+static int read_int(const char *prompt, int *out)
+{
+    char buf[64];
+
+    if (prompt){
+        printf("%s",prompt);
+    }
+
+    if (!fgets(buf, sizeof(buf),stdin)){
+        return 0;
+    }
+    
+    errno = 0;
+    char *end = NULL;
+    long v = strtol(buf, &end, 10);
+
+    // オーバーフローや変換エラーがあれば失敗
+    if(errno != 0) return 0;
+    // 先頭から1文字も数値に変換できなかった場合("abc"など。)
+    if(end == buf) return 0;
+    // 数値の後の空白・タブをスキップする
+    while (*end == ' ' || *end == '\t') end++;
+    // 改行や文字列終端以外が残っていればエラー
+    if(*end != '\n' && *end != '\0') return 0;
+    // longの値がintの範囲に収まっているかを確認
+    if(v < INT_MIN || v > INT_MAX) return 0;
+
+    // 問題がなければintに変換
+    *out = (int)v;
+    return 1;
+}
+
+// read_int に範囲チェックを追加
+static int read_int_range(const char *prompt, int min, int max, int *out)
+{
+    int v;
+    // 数値として正しく読めるかを確認
+    if(!read_int(prompt, &v)) return 0;
+    // 指定した範囲に入っているかを確認
+    if(v < min || v > max) return 0;
+    *out = v;
+    return 1;
+}
+
 int main()
 {
     Menu menuNumber = MENU_NONE;
@@ -56,10 +104,8 @@ int main()
         printf("【メニュー選択】%d：商品購入、%d：メンテナンス、%d：終了\n",MENU_BUY,MENU_MAINTENANCE,MENU_EXIT);
 
         int inputMenu = 0;
-        if (scanf("%d",&inputMenu) != 1)
-        {
-            printf("実行するメニュー番号を入力してください。\n");
-            while (getchar() != '\n');
+        if (!read_int("実行するメニュー番号を入力してください。\n",&inputMenu)){
+            printf("Error::数値で入力してください。\n");
             continue;
         }
 
@@ -100,16 +146,12 @@ int main()
 
                 while (1)
                 {
-                    printf("\n購入する商品の番号を入力してください。\n");
-                    scanf("%d",&syouhinNumber);
-
-                    // 正しい入力を受けるとループを抜ける。
-                    if (syouhinNumber >= MIN_SYOUHIN_NUMBER && syouhinNumber <= itemCount)
+                    if(!read_int_range("\n購入する商品の番号を入力してください。\n",MIN_SYOUHIN_NUMBER,itemCount,&syouhinNumber))
                     {
-                        break;
+                        printf("Error::存在しない商品番号です。もう一度入力してください。\n");
+                        continue;
                     }
-
-                    printf("Error::存在しない商品番号です。もう一度入力してください。\n");
+                    break;
                 }
 
                 syouhinPrice = prices[syouhinNumber - 1];
@@ -165,12 +207,16 @@ int main()
 
 // 硬貨投入処理
 void inputCoins(int *jyuu,int *gojyuu, int *hyaku,int *gohyaku){
-    printf("\n10円硬貨の投入する枚数を入力してください。\n");
-    scanf("%d",jyuu);
-    printf("50円硬貨の投入する枚数を入力してください。\n");
-    scanf("%d",gojyuu);
-    printf("100円硬貨の投入する枚数を入力してください。\n");
-    scanf("%d",hyaku);
-    printf("500円硬貨の投入する枚数を入力してください。\n");
-    scanf("%d",gohyaku);
+    while (!read_int_range("\n10円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, jyuu)){
+        printf("Error::0以上の数値を入力してください。");
+    }
+    while (!read_int_range("\n50円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, gojyuu)){
+        printf("Error::0以上の数値を入力してください。");
+    }
+    while (!read_int_range("\n100円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, hyaku)){
+        printf("Error::0以上の数値を入力してください。");
+    }
+    while (!read_int_range("\n500円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, gohyaku)){
+        printf("Error::0以上の数値を入力してください。");
+    }
 }
