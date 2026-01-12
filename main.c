@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <limits.h>
 
 /* メニュー番号(将来的にヘッダーファイルへ移行) */
 typedef enum{
@@ -38,139 +41,175 @@ static const int itemCount = (int)(sizeof(prices) / sizeof(prices[0]));
 
 void inputCoins(int *jyuu,int *gojyuu, int *hyaku,int *gohyaku);
 
-int main()
+// 1行分の入力を読み取り、intへ変換。成功：1、失敗：0を返す。
+static int read_int(const char *prompt, int *out)
 {
-    Menu menuNumber = MENU_NONE;
-    int jyuuYen = 0;
-    int gojyuuYen = 0;
-    int hyakuYen = 0;
-    int gohyakuYen = 0;
-    int tounyuuKingaku = 0;
-    int syouhinNumber = 0;
-    int otsuri = 0;
+    char buf[64];
 
+    if (prompt){
+        printf("%s",prompt);
+    }
 
+    if (!fgets(buf, sizeof(buf),stdin)){
+        return 0;
+    }
+    
+    errno = 0;
+    char *end = NULL;
+    long v = strtol(buf, &end, 10);
+
+    // オーバーフローや変換エラーがあれば失敗
+    if(errno != 0) return 0;
+    // 先頭から1文字も数値に変換できなかった場合("abc"など。)
+    if(end == buf) return 0;
+    // 数値の後の空白・タブをスキップする
+    while (*end == ' ' || *end == '\t') end++;
+    // 改行や文字列終端以外が残っていればエラー
+    if(*end != '\n' && *end != '\0') return 0;
+    // longの値がintの範囲に収まっているかを確認
+    if(v < INT_MIN || v > INT_MAX) return 0;
+
+    // 問題がなければintに変換
+    *out = (int)v;
+    return 1;
+}
+
+// read_int に範囲チェックを追加
+static int read_int_range(const char *prompt, int min, int max, int *out)
+{
+    int v;
+    // 数値として正しく読めるかを確認
+    if(!read_int(prompt, &v)) return 0;
+    // 指定した範囲に入っているかを確認
+    if(v < min || v > max) return 0;
+    *out = v;
+    return 1;
+}
+
+Menu select_menu(void);
+void show_products(void);
+int select_products(int itemCount);
+int input_total_money(void);
+void buy_flow(void);
+
+int main(void)
+{
     while (1)
     {
-        printf("\n自動販売機プログラム\n");
-        printf("【メニュー選択】%d：商品購入、%d：メンテナンス、%d：終了\n",MENU_BUY,MENU_MAINTENANCE,MENU_EXIT);
+        Menu menu = select_menu();
 
-        int inputMenu = 0;
-        if (scanf("%d",&inputMenu) != 1)
-        {
-            printf("実行するメニュー番号を入力してください。\n");
-            while (getchar() != '\n');
-            continue;
-        }
-
-        if (inputMenu ==  MENU_BUY || inputMenu == MENU_MAINTENANCE || inputMenu == MENU_EXIT){
-            menuNumber = (Menu)inputMenu;
-        } else{
-            printf("\n正しい番号を入力してください。\n");
-            menuNumber = MENU_NONE;
-            continue;
-        }
-
-        switch (menuNumber)
-        {
+        switch (menu){
             case MENU_BUY:
-            {
-                int syouhinPrice = 0;
-
-                // 商品一覧
-                printf("\n【取扱商品】\n");
-                for (int i = 0; i < itemCount;i ++)
-                {
-                    printf("%d：%s(%d円)\n",i + MIN_SYOUHIN_NUMBER,syouhinName[i],prices[i]);
-                }
-
-                // 硬貨投入処理
-                inputCoins(&jyuuYen,&gojyuuYen,&hyakuYen,&gohyakuYen);
-
-                // 投入金額の合計
-                tounyuuKingaku = (jyuuYen*COIN_10) + (gojyuuYen*COIN_50) + (hyakuYen*COIN_100) + (gohyakuYen*COIN_500);
-
-                // 合計額が0の場合、メニューへ戻る
-                if (tounyuuKingaku == 0)
-                {
-                    printf("\n投入金額が0のためメニューに戻ります。\n");
-                    menuNumber = MENU_NONE;
-                    break;
-                }
-
-                while (1)
-                {
-                    printf("\n購入する商品の番号を入力してください。\n");
-                    scanf("%d",&syouhinNumber);
-
-                    // 正しい入力を受けるとループを抜ける。
-                    if (syouhinNumber >= MIN_SYOUHIN_NUMBER && syouhinNumber <= itemCount)
-                    {
-                        break;
-                    }
-
-                    printf("Error::存在しない商品番号です。もう一度入力してください。\n");
-                }
-
-                syouhinPrice = prices[syouhinNumber - 1];
-
-                // 投入金額と商品価格の比較
-                if (tounyuuKingaku < syouhinPrice)
-                {
-                    int fusokuKingaku = 0;
-                    fusokuKingaku = syouhinPrice - tounyuuKingaku;
-
-                    // 投入金額が不足していた場合の処理
-                    while (fusokuKingaku > 0)
-                    {
-                        printf("\n投入金額が%d円不足しています。\n商品価格：%d円、投入金額：%d円\n",fusokuKingaku,syouhinPrice,tounyuuKingaku);
-
-                        // 追加で硬貨投入
-                        printf("追加で硬貨を投入してください。\n");
-
-                        // 硬貨投入処理
-                        inputCoins(&jyuuYen,&gojyuuYen,&hyakuYen,&gohyakuYen);
-
-                        tounyuuKingaku += (jyuuYen*COIN_10) +  (gojyuuYen*COIN_50) + (hyakuYen*COIN_100) + (gohyakuYen*COIN_500);
-                        fusokuKingaku = syouhinPrice - tounyuuKingaku;
-                    }
-                }
-
-                printf("\n【購入完了！】\n");
-
-                // お釣りの計算
-                otsuri = tounyuuKingaku - syouhinPrice;
-                printf("おつり%d円\n",otsuri);
-
-                menuNumber = MENU_NONE;
+                buy_flow();
                 break;
-            }
             case MENU_MAINTENANCE:
-                printf("%d:メンテナンス\n",menuNumber);
+                printf("%d:メンテナンス\n",menu);
                 return 0;
                 break;
-
             case MENU_EXIT:
-                printf("%d:終了\n",menuNumber);
+                printf("%d:終了\n",menu);
                 return 0;
-                break;
-
             default:
-                printf("正しい番号を入力してください。\n");
                 break;
         }
     }
-    return 0;
+}
+
+// メニュー選択
+Menu select_menu(void)
+{
+    int inputMenu = MENU_BUY;
+
+    printf("\n自動販売機プログラム\n");
+    printf("【メニュー選択】%d：商品購入、%d：メンテナンス、%d：終了\n",MENU_BUY,MENU_MAINTENANCE,MENU_EXIT);
+
+    if (!read_int("実行するメニュー番号を入力してください。\n",&inputMenu)){
+        printf("Error::数値で入力してください。\n");
+        return MENU_NONE;
+    }
+
+    if (inputMenu ==  MENU_BUY || inputMenu == MENU_MAINTENANCE || inputMenu == MENU_EXIT){
+        return (Menu)inputMenu;
+    }
+
+    printf("\n正しい番号を入力してください。\n");
+        return MENU_NONE;
+}
+
+// 商品一覧を表示
+void show_products(void)
+{
+    printf("\n【取扱商品】\n");
+    for (int i = 0; i < itemCount;i ++){
+        printf("%d：%s(%d円)\n",i + MIN_SYOUHIN_NUMBER,syouhinName[i],prices[i]);
+    }
+}
+
+// 商品番号を入力
+int select_products(int itemCount)
+{
+    int syouhinNumber;
+
+    while (1){
+        if(!read_int_range("\n購入する商品の番号を入力してください。\n",MIN_SYOUHIN_NUMBER,itemCount,&syouhinNumber)){
+            printf("Error::存在しない商品番号です。もう一度入力してください。\n");
+            continue;
+        }
+        return syouhinNumber;
+    }
 }
 
 // 硬貨投入処理
 void inputCoins(int *jyuu,int *gojyuu, int *hyaku,int *gohyaku){
-    printf("\n10円硬貨の投入する枚数を入力してください。\n");
-    scanf("%d",jyuu);
-    printf("50円硬貨の投入する枚数を入力してください。\n");
-    scanf("%d",gojyuu);
-    printf("100円硬貨の投入する枚数を入力してください。\n");
-    scanf("%d",hyaku);
-    printf("500円硬貨の投入する枚数を入力してください。\n");
-    scanf("%d",gohyaku);
+    while (!read_int_range("\n10円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, jyuu)){
+        printf("Error::0以上の数値を入力してください。");
+    }
+    while (!read_int_range("\n50円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, gojyuu)){
+        printf("Error::0以上の数値を入力してください。");
+    }
+    while (!read_int_range("\n100円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, hyaku)){
+        printf("Error::0以上の数値を入力してください。");
+    }
+    while (!read_int_range("\n500円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, gohyaku)){
+        printf("Error::0以上の数値を入力してください。");
+    }
+}
+
+// 合計金額
+int input_total_money(void)
+{
+    int coin10Count = 0;
+    int coin50Count = 0;
+    int coin100Count = 0;
+    int coin500Count = 0;
+
+    inputCoins(&coin10Count, &coin50Count, &coin100Count, &coin500Count);
+
+    return ((coin10Count * COIN_10) + (coin50Count * COIN_50) + (coin100Count * COIN_100) + (coin500Count * COIN_500));
+}
+
+// 購入の処理
+void buy_flow(void)
+{
+    show_products();
+
+    int total = input_total_money();
+    if (total = 0){
+        printf("\n投入金額が0のためメニューに戻ります。\n");
+        return;
+    }
+
+    int productNo = select_products(itemCount);
+    int price = prices[productNo - 1];
+
+    while (total < price){
+        int lack = price - total;
+        printf("\n投入金額が%d円不足しています。\n",lack);
+        printf("追加で硬貨を投入してください。\n");
+
+        int add = input_total_money();
+        total += add;
+    }
+    printf("\n【購入完了！】\n");
+    printf("おつり%d円\n",total - price);
 }
