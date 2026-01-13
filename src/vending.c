@@ -3,6 +3,7 @@
 #include "coin.h"
 #include "product.h"
 #include "error.h"
+#include "ui_messages.h"
 #include <stdio.h>
 
 // 購入の処理
@@ -12,7 +13,7 @@ void buy_flow(void)
 
     int total = input_total_money();
     if (total == 0){
-        printf("\n投入金額が0のためメニューに戻ります。\n");
+        printf(MSG_ZERO_MONEY);
         return;
     }
 
@@ -21,12 +22,12 @@ void buy_flow(void)
 
     while (total < price){
         int lack = price - total;
-        printf("\n投入金額が%d円不足しています。\n",lack);
-        printf("追加で硬貨を投入してください。\n");
+        printf(MSG_LACK_MONEY,lack);
+        printf(MSG_ADD_COINS);
 
         int add = input_total_money();
         total += add;
     }
-    printf("\n【購入完了！】\n");
-    printf("おつり%d円\n",total - price);
+    printf(MSG_PURCHASE_OK);
+    printf(MSG_CHANGE,total - price);
 }

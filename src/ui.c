@@ -1,6 +1,7 @@
 #include "ui.h"
 #include "product.h"
 #include "error.h"
+#include "ui_messages.h"
 #include <stdio.h>
 
 // メニュー選択
@@ -8,11 +9,11 @@ Menu select_menu(void)
 {
     int inputMenu = MENU_BUY;
 
-    printf("\n自動販売機プログラム\n");
-    printf("【メニュー選択】%d：商品購入、%d：メンテナンス、%d：終了\n",MENU_BUY,MENU_MAINTENANCE,MENU_EXIT);
+    printf(MSG_APP_TITLE);
+    printf(MSG_MENU);
 
-    if (!read_int("実行するメニュー番号を入力してください。\n",&inputMenu)){
-        printf("Error::数値で入力してください。\n");
+    if (!read_int(MSG_INPUT_NUMBER,&inputMenu)){
+        printf(MSG_ERROR_NUMBER);
         return MENU_NONE;
     }
 
@@ -20,14 +21,14 @@ Menu select_menu(void)
         return (Menu)inputMenu;
     }
 
-    printf("\n正しい番号を入力してください。\n");
+    printf(MSG_ERROR_RANGE);
         return MENU_NONE;
 }
 
 // 商品一覧を表示
 void show_products(void)
 {
-    printf("\n【取扱商品】\n");
+    printf(MSG_PRODUCT_LIST);
     for (int i = 0; i < itemCount;i ++){
         printf("%d：%s(%d円)\n",i + MIN_SYOUHIN_NUMBER,syouhinName[i],prices[i]);
     }
@@ -39,8 +40,8 @@ int select_products(int itemCount)
     int syouhinNumber;
 
     while (1){
-        if(!read_int_range("\n購入する商品の番号を入力してください。\n",MIN_SYOUHIN_NUMBER,itemCount,&syouhinNumber)){
-            printf("Error::存在しない商品番号です。もう一度入力してください。\n");
+        if(!read_int_range(MSG_SELECT_PRODUCT,MIN_SYOUHIN_NUMBER,itemCount,&syouhinNumber)){
+            printf(MSG_INVALID_PRODUCT);
             continue;
         }
         return syouhinNumber;

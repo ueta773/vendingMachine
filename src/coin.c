@@ -1,22 +1,23 @@
 #include "coin.h"
 #include "config.h"
 #include "error.h"
+#include "ui_messages.h"
 #include <limits.h>
 #include <stdio.h>
 
 // 硬貨投入処理
 void inputCoins(int *jyuu,int *gojyuu, int *hyaku,int *gohyaku){
-    while (!read_int_range("\n10円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, jyuu)){
-        printf("Error::0以上の数値を入力してください。");
+    while (!read_int_range(MSG_COIN_10, 0, INT_MAX, jyuu)){
+        printf(MSG_COIN_ERR);
     }
-    while (!read_int_range("\n50円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, gojyuu)){
-        printf("Error::0以上の数値を入力してください。");
+    while (!read_int_range(MSG_COIN_50, 0, INT_MAX, gojyuu)){
+        printf(MSG_COIN_ERR);
     }
-    while (!read_int_range("\n100円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, hyaku)){
-        printf("Error::0以上の数値を入力してください。");
+    while (!read_int_range(MSG_COIN_100, 0, INT_MAX, hyaku)){
+        printf(MSG_COIN_ERR);
     }
-    while (!read_int_range("\n500円硬貨の投入する枚数を入力してください。\n",0, INT_MAX, gohyaku)){
-        printf("Error::0以上の数値を入力してください。");
+    while (!read_int_range(MSG_COIN_500, 0, INT_MAX, gohyaku)){
+        printf(MSG_COIN_ERR);
     }
 }
 
