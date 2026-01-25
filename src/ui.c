@@ -28,7 +28,7 @@ Menu select_menu(void)
 // 商品一覧を表示
 void show_products(void)
 {
-    printf(MSG_PRODUCT_LIST);
+    printf(INFO_PRODUCT_LIST);
     for (int i = 0; i < itemCount;i ++){
         printf("%d：%s(%d円)\n",i + MIN_SYOUHIN_NUMBER,syouhinName[i],prices[i]);
     }
@@ -40,8 +40,8 @@ int select_products(int itemCount)
     int syouhinNumber;
 
     while (1){
-        if(!read_int_range(MSG_SELECT_PRODUCT,MIN_SYOUHIN_NUMBER,itemCount,&syouhinNumber)){
-            printf(MSG_INVALID_PRODUCT);
+        if(!read_int_range(PROMPT_SELECT_PRODUCT,MIN_SYOUHIN_NUMBER,itemCount,&syouhinNumber)){
+            printf(ERROR_INVALID_PRODUCT);
             continue;
         }
         return syouhinNumber;

@@ -13,7 +13,7 @@ void buy_flow(void)
 
     int total = input_total_money();
     if (total == 0){
-        printf(MSG_ZERO_MONEY);
+        printf(INFO_ZERO_MONEY);
         return;
     }
 
@@ -22,12 +22,12 @@ void buy_flow(void)
 
     while (total < price){
         int lack = price - total;
-        printf(MSG_LACK_MONEY,lack);
-        printf(MSG_ADD_COINS);
+        printf(INFO_LACK_MONEY,lack);
+        printf(PROMPT_ADD_COINS);
 
         int add = input_total_money();
         total += add;
     }
-    printf(MSG_PURCHASE_OK);
-    printf(MSG_CHANGE,total - price);
+    printf(INFO_PURCHASE_OK);
+    printf(INFO_CHANGE,total - price);
 }
