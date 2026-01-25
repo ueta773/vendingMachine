@@ -1,7 +1,7 @@
-#include <stdio.h>
 #include "config.h"
 #include "ui.h"
 #include "vending.h"
+#include <stdio.h>
 
 int main(void)
 {
