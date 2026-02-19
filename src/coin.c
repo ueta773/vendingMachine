@@ -7,16 +7,16 @@
 
 // 硬貨投入処理
 void inputCoins(int *jyuu,int *gojyuu, int *hyaku,int *gohyaku){
-    while (!read_int_range(PROMPT_MSG_COIN_10, 0, INT_MAX, jyuu)){
+    while (!read_int_range(PROMPT_MSG_COIN_10, 0, MAX_COIN_COUNT, jyuu)){
         printf(ERROR_COIN_COUNT);
     }
-    while (!read_int_range(PROMPT_MSG_COIN_50, 0, INT_MAX, gojyuu)){
+    while (!read_int_range(PROMPT_MSG_COIN_50, 0, MAX_COIN_COUNT, gojyuu)){
         printf(ERROR_COIN_COUNT);
     }
-    while (!read_int_range(PROMPT_MSG_COIN_100, 0, INT_MAX, hyaku)){
+    while (!read_int_range(PROMPT_MSG_COIN_100, 0, MAX_COIN_COUNT, hyaku)){
         printf(ERROR_COIN_COUNT);
     }
-    while (!read_int_range(PROMPT_MSG_COIN_500, 0, INT_MAX, gohyaku)){
+    while (!read_int_range(PROMPT_MSG_COIN_500, 0, MAX_COIN_COUNT, gohyaku)){
         printf(ERROR_COIN_COUNT);
     }
 }
