@@ -17,6 +17,10 @@ enum{
 };
 
 enum{
+    MAX_COIN_COUNT = 100
+};
+
+enum{
     DRINK01_PRICE = 100,
     DRINK02_PRICE = 120,
     DRINK03_PRICE = 140

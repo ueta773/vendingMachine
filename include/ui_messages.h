@@ -25,7 +25,7 @@
 #define PROMPT_MSG_COIN_50   "50円硬貨の枚数を入力してください。\n"
 #define PROMPT_MSG_COIN_100  "100円硬貨の枚数を入力してください。\n"
 #define PROMPT_MSG_COIN_500  "500円硬貨の枚数を入力してください。\n"
-#define ERROR_COIN_COUNT  ERROR_TAG "0以上の数値を入力してください。\n"
+#define ERROR_COIN_COUNT  ERROR_TAG "0~100の数値を入力してください。\n"
 
 // 購入の処理時
 #define INFO_ZERO_MONEY    "投入金額が0のためメニューに戻ります。\n"
