@@ -9,6 +9,11 @@
 // 購入の処理
 void buy_flow(void)
 {
+    if (productCount == 0){
+        printf(INFO_NO_PRODUCTS);
+        return;
+    }
+
     show_products();
 
     int total = input_total_money();
@@ -17,17 +22,26 @@ void buy_flow(void)
         return;
     }
 
-    int productNo = select_products(itemCount);
-    int price = prices[productNo - 1];
+    int productNo = select_products(productCount);
+    Product *product = &products[productNo - 1];
 
-    while (total < price){
-        int lack = price - total;
+    if (product->stock <= 0){
+        printf(ERROR_OUT_OF_STOCK);
+        return;
+    }
+
+    while (total < product->price){
+        int lack = product->price - total;
         printf(INFO_LACK_MONEY,lack);
         printf(PROMPT_ADD_COINS);
 
         int add = input_total_money();
         total += add;
     }
+
+    product->stock--;
+    save_products();
+
     printf(INFO_PURCHASE_OK);
-    printf(INFO_CHANGE,total - price);
+    printf(INFO_CHANGE,total - product->price);
 }

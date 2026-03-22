@@ -2,7 +2,7 @@
 #include "config.h"
 #include "error.h"
 #include "ui_messages.h"
-#include <limits.h>
+// #include <limits.h>
 #include <stdio.h>
 
 // 硬貨投入処理
