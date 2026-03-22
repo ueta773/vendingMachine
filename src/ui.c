@@ -29,8 +29,18 @@ Menu select_menu(void)
 void show_products(void)
 {
     printf(INFO_PRODUCT_LIST);
-    for (int i = 0; i < itemCount;i ++){
-        printf("%d：%s(%d円)\n",i + MIN_SYOUHIN_NUMBER,syouhinName[i],prices[i]);
+
+    if (productCount == 0){
+        printf(INFO_NO_PRODUCTS);
+        return;
+    }
+
+    for (int i = 0; i < productCount; i++){
+        printf("%d：%s(%d円) 在庫:%d\n",
+            products[i].id,
+            products[i].name,
+            products[i].price,
+            products[i].stock);
     }
 }
 

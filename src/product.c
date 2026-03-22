@@ -1,6 +1,63 @@
 #include "product.h"
 #include "config.h"
+#include "ui_messages.h"
+#include <stdio.h>
+#include <string.h>
 
-const char * const syouhinName[] = {"お茶","コーヒー","ジュース"};
-const int prices[] = {DRINK01_PRICE,DRINK02_PRICE,DRINK03_PRICE};
-const int itemCount = 3;
+Product products[MAX_PRODUCTS];
+int productCount = 0;
+
+#define FILE_NAME "products.txt"
+
+void load_products(void){
+    FILE *fp = fopen(FILE_NAME,"r");
+    if (!fp) return;
+
+    char line[256];
+
+    while (fgets(line, sizeof(line), fp)){
+
+        Product p;
+
+        if (sscanf(line,"%d,%[^,],%d,%d",
+            &p.id,
+            p.name,
+            &p.price,
+            &p.stock) == 4){
+
+            if(productCount < MAX_PRODUCTS) products[productCount++]= p;
+            }
+    }
+
+    // while (fscanf(fp,"%d,%20[^,],%d,%d",
+    //     &products[productCount].id,
+    //     products[productCount].name,
+    //     &products[productCount].price,
+    //     &products[productCount].stock) == 4){
+    //         productCount ++;
+    // }
+    fclose(fp);
+}
+
+void save_products(void){
+    FILE *fp = fopen(FILE_NAME,"w");
+    if (!fp){
+        printf(ERROR_SAVE_FAILED);
+        return;
+    }
+
+    for (int i=0; i < productCount ; i++){
+        fprintf(fp,"%d,%s,%d,%d\n",
+            products[i].id,
+            products[i].name,
+            products[i].price,
+            products[i].stock);
+    }
+
+    fclose(fp);
+    printf(INFO_SAVE_OK);
+}
+
+// const char * const syouhinName[] = {"お茶","コーヒー","ジュース"};
+// const int prices[] = {DRINK01_PRICE,DRINK02_PRICE,DRINK03_PRICE};
+// const int itemCount = 3;
