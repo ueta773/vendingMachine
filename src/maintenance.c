@@ -27,14 +27,14 @@ static void add_product(void)
                 sizeof(product->name));
 
     // 追加する商品の価格の入力を受ける
-    input_int(PROMPT_PRODUCT_PRICE,
-                0, 1000,
-                &product->price);
+    // input_int(PROMPT_PRODUCT_PRICE,
+    //             0, 1000,
+    //             &product->price);
 
     // 追加する商品の在庫の入力を受ける
-    input_int(PROMPT_PRODUCT_STOCK,
-                0, 10,
-                &product->stock);
+    // input_int(PROMPT_PRODUCT_STOCK,
+    //             0, 10,
+    //             &product->stock);
 
     // // 追加する商品名の入力を受ける
     // printf(PROMPT_PRODUCT_NAME);
@@ -44,10 +44,14 @@ static void add_product(void)
     // product->name[strcspn(product->name,"\n")] = 0;
 
     // // 追加する商品の価格の入力を受ける
-    // while (!read_int_range(PROMPT_PRODUCT_PRICE,0,1000,&product->price));
+    while (!read_int_range(PROMPT_PRODUCT_PRICE,0,1000,&product->price)){
+        printf(ERROR_PRODUCT_PRICE);
+    };
 
     // // 追加する商品の在庫の入力を受ける
-    // while (!read_int_range(PROMPT_PRODUCT_STOCK,0,10,&product->stock));
+    while (!read_int_range(PROMPT_PRODUCT_STOCK,0,10,&product->stock)){
+        printf(ERROR_PRODUCT_STOCK);
+    };
 
     productCount++;
     save_products();
@@ -65,11 +69,15 @@ static void change_price(void)
 
     // 価格変更を行いたい商品番号の入力を受ける
     int number;
-    while (!read_int_range(PROMPT_CHANGE_ID,1,productCount,&number));
+    while (!read_int_range(PROMPT_CHANGE_ID,1,productCount,&number)){
+        printf(MSG_ERROR_RANGE);
+    }
 
     // 価格変更
     int price;
-    while (!read_int_range(PROMPT_NEW_PRICE,0,1000,&price));
+    while (!read_int_range(PROMPT_NEW_PRICE,0,1000,&price)){
+        printf(ERROR_PRODUCT_PRICE);
+    }
 
     products[number-1].price = price;
     save_products();
@@ -85,11 +93,15 @@ static void add_stock(void)
 
     // 在庫補充したい商品番号の入力を受ける
     int number;
-    while (!read_int_range(PROMPT_STOCK_ID,1,productCount,&number));
+    while (!read_int_range(PROMPT_STOCK_ID,1,productCount,&number)){
+        printf(ERROR_INVALID_PRODUCT);
+    }
 
     // 在庫補充の数の入力を受ける
     int add;
-    while (!read_int_range(PROMPT_ADD_STOCK,0,10,&add));
+    while (!read_int_range(PROMPT_ADD_STOCK,0,10,&add)){
+        printf(ERROR_PRODUCT_STOCK);
+    }
 
     Product *product = &products[number-1];
 
@@ -114,7 +126,9 @@ static void delete_product(void)
 
     // 削除する商品の番号の入力を受ける
     int number;
-    while (!read_int_range(PROMPT_DELETE_ID,1,productCount,&number));
+    while (!read_int_range(PROMPT_DELETE_ID,1,productCount,&number)){
+        printf(ERROR_INVALID_PRODUCT);
+    }
 
     for (int i = number-1; i < productCount-1; i++){
         products[i] = products[i+1];
