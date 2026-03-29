@@ -7,14 +7,14 @@
 #include <stdio.h>
 
 // 購入の処理
-void buy_flow(void)
+void buy_flow(Product products[],int *count)
 {
-    if (productCount == 0){
+    if (*count == 0){
         printf(INFO_NO_PRODUCTS);
         return;
     }
 
-    show_products();
+    show_products(products,*count);
 
     int total = input_total_money();
     if (total == 0){
@@ -22,7 +22,7 @@ void buy_flow(void)
         return;
     }
 
-    int productNo = select_products(productCount);
+    int productNo = select_products(*count);
     Product *product = &products[productNo - 1];
 
     if (product->stock <= 0){
@@ -40,7 +40,7 @@ void buy_flow(void)
     }
 
     product->stock--;
-    save_products();
+    save_products(products,*count);
 
     printf(INFO_PURCHASE_OK);
     printf(INFO_CHANGE,total - product->price);

@@ -4,12 +4,12 @@
 #include <stdio.h>
 #include <string.h>
 
-Product products[MAX_PRODUCTS];
-int productCount = 0;
+// static Product products[MAX_PRODUCTS];
+// static int productCount = 0;
 
 #define FILE_NAME "products.txt"
 
-void load_products(void){
+void load_products(Product products[],int *count){
     FILE *fp = fopen(FILE_NAME,"r");
     if (!fp) return;
 
@@ -25,7 +25,7 @@ void load_products(void){
             &p.price,
             &p.stock) == 4){
 
-            if(productCount < MAX_PRODUCTS) products[productCount++]= p;
+            if(*count < MAX_PRODUCTS) products[(*count)++]= p;
             }
     }
 
@@ -39,14 +39,14 @@ void load_products(void){
     fclose(fp);
 }
 
-void save_products(void){
+void save_products(Product products[],int count){
     FILE *fp = fopen(FILE_NAME,"w");
     if (!fp){
         printf(ERROR_SAVE_FAILED);
         return;
     }
 
-    for (int i=0; i < productCount ; i++){
+    for (int i=0; i < count ; i++){
         fprintf(fp,"%d,%s,%d,%d\n",
             products[i].id,
             products[i].name,

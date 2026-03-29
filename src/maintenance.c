@@ -8,18 +8,18 @@
 #include <string.h>
 
 // 商品追加
-static void add_product(void)
+static void add_product(Product products[],int *count)
 {
     // 商品一覧
-    show_products();
+    show_products(products,*count);
 
-    if (productCount >= MAX_PRODUCTS){
+    if (*count >= MAX_PRODUCTS){
         printf(ERROR_PRODUCT_LIMIT);
         return;
     }
 
-    Product *product = &products[productCount];
-    product->id = productCount + 1;
+    Product *product = &products[*count];
+    product->id = (*count) + 1;
 
     // 追加する商品名の入力を受ける
     input_string(PROMPT_PRODUCT_NAME,
@@ -53,23 +53,23 @@ static void add_product(void)
         printf(ERROR_PRODUCT_STOCK);
     };
 
-    productCount++;
-    save_products();
+    (*count)++;
+    save_products(products,*count);
     printf(INFO_PRODUCT_ADDED);
 
     // 追加後の商品一覧
-    show_products();
+    show_products(products,*count);
 }
 
 // 価格変更
-static void change_price(void)
+static void change_price(Product products[],int *count)
 {
     // 商品一覧
-    show_products();
+    show_products(products,*count);
 
     // 価格変更を行いたい商品番号の入力を受ける
     int number;
-    while (!read_int_range(PROMPT_CHANGE_ID,1,productCount,&number)){
+    while (!read_int_range(PROMPT_CHANGE_ID,1,*count,&number)){
         printf(MSG_ERROR_RANGE);
     }
 
@@ -80,20 +80,20 @@ static void change_price(void)
     }
 
     products[number-1].price = price;
-    save_products();
+    save_products(products,*count);
     printf(INFO_PRICE_CHANGED);
-    show_products();
+    show_products(products,*count);
 }
 
 // 在庫補充
-static void add_stock(void)
+static void add_stock(Product products[],int *count)
 {
     // 商品一覧
-    show_products();
+    show_products(products,*count);
 
     // 在庫補充したい商品番号の入力を受ける
     int number;
-    while (!read_int_range(PROMPT_STOCK_ID,1,productCount,&number)){
+    while (!read_int_range(PROMPT_STOCK_ID,1,*count,&number)){
         printf(ERROR_INVALID_PRODUCT);
     }
 
@@ -112,43 +112,43 @@ static void add_stock(void)
     }
 
     product->stock += add;
-    save_products();
+    save_products(products,*count);
     printf(INFO_STOCK_ADDED);
     // 在庫補充後の商品一覧
-    show_products();
+    show_products(products,*count);
 }
 
 // 商品削除
-static void delete_product(void)
+static void delete_product(Product products[],int *count)
 {
     // 商品一覧
-    show_products();
+    show_products(products,*count);
 
     // 削除する商品の番号の入力を受ける
     int number;
-    while (!read_int_range(PROMPT_DELETE_ID,1,productCount,&number)){
+    while (!read_int_range(PROMPT_DELETE_ID,1,*count,&number)){
         printf(ERROR_INVALID_PRODUCT);
     }
 
-    for (int i = number-1; i < productCount-1; i++){
+    for (int i = number-1; i < *count-1; i++){
         products[i] = products[i+1];
     }
 
-    productCount--;
+    (*count)--;
 
     // 商品番号を振り直す
-    for (int i = 0; i < productCount; i++){
+    for (int i = 0; i < *count; i++){
         products[i].id = i + 1;
     }
 
-    save_products();
+    save_products(products,*count);
 
     printf(INFO_PRODUCT_DELETED);
     // 商品削除後の商品一覧
-    show_products();
+    show_products(products,*count);
 }
 
-void maintenance_flow(void)
+void maintenance_flow(Product products[],int *count)
 {
     int menu;
 
@@ -162,16 +162,16 @@ void maintenance_flow(void)
 
         switch (menu){
             case MAINT_ADD_PRODUCT:
-                add_product();
+                add_product(products,count);
                 break;
             case MAINT_CHANGE_PRICE:
-                change_price();
+                change_price(products,count);
                 break;
             case MAINT_ADD_STOCK:
-                add_stock();
+                add_stock(products,count);
                 break;
             case MAINT_DELETE_PRODUCT:
-                delete_product();
+                delete_product(products,count);
                 break;
             case MAINT_BACK:
                 return;

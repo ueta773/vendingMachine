@@ -7,17 +7,20 @@
 #include <stdio.h>
 
 int main(void){
-    load_products();
+    Product products[MAX_PRODUCTS];
+    int productCount = 0;
+
+    load_products(products,&productCount);
 
     while (1){
         Menu menu = select_menu();
 
         switch (menu){
             case MENU_BUY:
-                buy_flow();
+                buy_flow(products,&productCount);
                 break;
             case MENU_MAINTENANCE:
-                maintenance_flow();
+                maintenance_flow(products,&productCount);
                 break;
             case MENU_EXIT:
                 printf("%d:終了\n",menu);

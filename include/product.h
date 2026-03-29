@@ -12,11 +12,11 @@ typedef struct{
     int stock;
 } Product;
 
-extern Product products[MAX_PRODUCTS];
-extern int productCount;
+// static Product products[MAX_PRODUCTS];
+// static int productCount;
 
-void load_products(void);
-void save_products(void);
+void load_products(Product products[],int *count);
+void save_products(Product products[],int count);
 
 // extern const char * const syouhinName[];
 // extern const int prices[];

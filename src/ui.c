@@ -26,16 +26,16 @@ Menu select_menu(void)
 }
 
 // 商品一覧を表示
-void show_products(void)
+void show_products(Product products[],int count)
 {
     printf(INFO_PRODUCT_LIST);
 
-    if (productCount == 0){
+    if (count == 0){
         printf(INFO_NO_PRODUCTS);
         return;
     }
 
-    for (int i = 0; i < productCount; i++){
+    for (int i = 0; i < count; i++){
         printf("%d：%s(%d円) 在庫:%d\n",
             products[i].id,
             products[i].name,
