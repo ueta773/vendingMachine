@@ -1,21 +1,26 @@
+// #include "main_menu.h"
 #include "config.h"
 #include "ui.h"
 #include "vending.h"
+#include "product.h"
+#include "maintenance.h"
 #include <stdio.h>
 
-int main(void)
-{
-    while (1)
-    {
+int main(void){
+    Product products[MAX_PRODUCTS];
+    int productCount = 0;
+
+    load_products(products,&productCount);
+
+    while (1){
         Menu menu = select_menu();
 
         switch (menu){
             case MENU_BUY:
-                buy_flow();
+                buy_flow(products,&productCount);
                 break;
             case MENU_MAINTENANCE:
-                printf("%d:メンテナンス\n",menu);
-                return 0;
+                maintenance_flow(products,&productCount);
                 break;
             case MENU_EXIT:
                 printf("%d:終了\n",menu);
