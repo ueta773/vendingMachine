@@ -10,6 +10,7 @@
 #define FILE_NAME "products.txt"
 
 void load_products(Product products[],int *count){
+    *count = 0;
     FILE *fp = fopen(FILE_NAME,"r");
     if (!fp) return;
 
@@ -25,7 +26,8 @@ void load_products(Product products[],int *count){
             &p.price,
             &p.stock) == 4){
 
-            if(*count < MAX_PRODUCTS) products[(*count)++]= p;
+            if(*count >= MAX_PRODUCTS) break;
+            products[(*count)++]= p;
             }
     }
 
