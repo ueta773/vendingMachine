@@ -64,6 +64,11 @@ static void add_product(Product products[],int *count)
 // 価格変更
 static void change_price(Product products[],int *count)
 {
+    if(*count == 0){
+        printf(INFO_NO_PRODUCTS);
+        return;
+    }
+
     // 商品一覧
     show_products(products,*count);
 
@@ -88,6 +93,11 @@ static void change_price(Product products[],int *count)
 // 在庫補充
 static void add_stock(Product products[],int *count)
 {
+        if(*count == 0){
+        printf(INFO_NO_PRODUCTS);
+        return;
+    }
+
     // 商品一覧
     show_products(products,*count);
 
@@ -121,6 +131,11 @@ static void add_stock(Product products[],int *count)
 // 商品削除
 static void delete_product(Product products[],int *count)
 {
+        if(*count == 0){
+        printf(INFO_NO_PRODUCTS);
+        return;
+    }
+
     // 商品一覧
     show_products(products,*count);
 
