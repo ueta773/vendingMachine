@@ -50,8 +50,8 @@
 
 // 商品追加
 #define PROMPT_PRODUCT_NAME   "追加する商品名を入力してください。\n"
-#define PROMPT_PRODUCT_PRICE  "価格(0〜1000円)を入力してください。\n"
-#define ERROR_PRODUCT_PRICE   ERROR_TAG "0~1000の価格を入力してください。\n"
+#define PROMPT_PRODUCT_PRICE  "価格(1〜1000円)を入力してください。\n"
+#define ERROR_PRODUCT_PRICE   ERROR_TAG "1~1000の価格を入力してください。\n"
 #define PROMPT_PRODUCT_STOCK  "初期在庫(0〜10)を入力してください。\n"
 #define ERROR_PRODUCT_STOCK   ERROR_TAG "0~10の数値を入力してください。\n"
 #define ERROR_PRODUCT_LIMIT   ERROR_TAG "これ以上登録できません。\n"
@@ -59,7 +59,7 @@
 
 // 価格変更
 #define PROMPT_CHANGE_ID      "価格変更を行いたい商品番号を入力してください。\n"
-#define PROMPT_NEW_PRICE      "新しい価格(0〜1000円)を入力してください。\n"
+#define PROMPT_NEW_PRICE      "新しい価格(1〜1000円)を入力してください。\n"
 #define INFO_PRICE_CHANGED    "価格を変更しました。\n"
 
 // 在庫補充

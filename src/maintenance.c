@@ -44,7 +44,7 @@ static void add_product(Product products[],int *count)
     // product->name[strcspn(product->name,"\n")] = 0;
 
     // // 追加する商品の価格の入力を受ける
-    while (!read_int_range(PROMPT_PRODUCT_PRICE,0,1000,&product->price)){
+    while (!read_int_range(PROMPT_PRODUCT_PRICE,1,1000,&product->price)){
         printf(ERROR_PRODUCT_PRICE);
     };
 
@@ -80,7 +80,7 @@ static void change_price(Product products[],int *count)
 
     // 価格変更
     int price;
-    while (!read_int_range(PROMPT_NEW_PRICE,0,1000,&price)){
+    while (!read_int_range(PROMPT_NEW_PRICE,1,1000,&price)){
         printf(ERROR_PRODUCT_PRICE);
     }
 
