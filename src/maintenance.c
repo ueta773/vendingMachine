@@ -107,13 +107,19 @@ static void add_stock(Product products[],int *count)
         printf(ERROR_INVALID_PRODUCT);
     }
 
+    Product *product = &products[number-1];
+
+    // 在庫の合計が10を超える場合、エラー
+    if (product->stock >= 10){
+        printf(ERROR_STOCK_OVER);
+        return;
+    }
+
     // 在庫補充の数の入力を受ける
     int add;
     while (!read_int_range(PROMPT_ADD_STOCK,0,10,&add)){
         printf(ERROR_PRODUCT_STOCK);
     }
-
-    Product *product = &products[number-1];
 
     // 在庫の合計が10を超える場合、エラー
     if (product->stock + add > 10){
