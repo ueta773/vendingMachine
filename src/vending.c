@@ -7,9 +7,14 @@
 #include <stdio.h>
 
 // 購入の処理
-void buy_flow(void)
+void buy_flow(Product products[],int *count)
 {
-    show_products();
+    if (*count == 0){
+        printf(INFO_NO_PRODUCTS);
+        return;
+    }
+
+    show_products(products,*count);
 
     int total = input_total_money();
     if (total == 0){
@@ -17,17 +22,26 @@ void buy_flow(void)
         return;
     }
 
-    int productNo = select_products(itemCount);
-    int price = prices[productNo - 1];
+    int productNo = select_products(*count);
+    Product *product = &products[productNo - 1];
 
-    while (total < price){
-        int lack = price - total;
+    if (product->stock <= 0){
+        printf(ERROR_OUT_OF_STOCK);
+        return;
+    }
+
+    while (total < product->price){
+        int lack = product->price - total;
         printf(INFO_LACK_MONEY,lack);
         printf(PROMPT_ADD_COINS);
 
         int add = input_total_money();
         total += add;
     }
+
+    product->stock--;
+    save_products(products,*count);
+
     printf(INFO_PURCHASE_OK);
-    printf(INFO_CHANGE,total - price);
+    printf(INFO_CHANGE,total - product->price);
 }

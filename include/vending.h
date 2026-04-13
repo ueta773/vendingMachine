@@ -1,6 +1,8 @@
 #ifndef VENDING_H
 #define VENDING_H
 
-void buy_flow(void);
+#include "product.h"
+
+void buy_flow(Product products[],int *count);
 
 #endif
